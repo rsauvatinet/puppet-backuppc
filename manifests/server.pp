@@ -302,8 +302,8 @@ class backuppc::server (
   # Include preseeding for debian packages
   if $::osfamily == 'Debian' {
     file { '/var/cache/debconf/backuppc.seeds':
-      ensure  => $ensure,
-      source  => 'puppet:///modules/backuppc/backuppc.preseed',
+      ensure => $ensure,
+      source => 'puppet:///modules/backuppc/backuppc.preseed',
     }
   }
 

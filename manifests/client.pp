@@ -314,7 +314,7 @@ class backuppc::client (
 
     if ! empty($system_additional_commands) {
       $additional_sudo_commands = join($system_additional_commands, ', ')
-      $sudo_commands = "${additional_sudo_commands}"
+      $sudo_commands = $additional_sudo_commands
     }
 
     if ! empty($system_additional_commands_noexec) {
@@ -364,10 +364,10 @@ class backuppc::client (
     }
 
     file { "${system_home_directory}/.ssh":
-      ensure  => directory,
-      mode    => '0700',
-      owner   => $system_account,
-      group   => $system_account,
+      ensure => directory,
+      mode   => '0700',
+      owner  => $system_account,
+      group  => $system_account,
     }
 
     file { "${system_home_directory}/backuppc.sh":
@@ -395,11 +395,11 @@ class backuppc::client (
   }
 
   @@file_line { "backuppc_host_${::fqdn}":
-    ensure  => $ensure,
-    path    => $backuppc::params::hosts,
-    match   => "^${::fqdn}.*$",
-    line    => "${::fqdn} ${hosts_file_dhcp} backuppc ${hosts_file_more_users}\n",
-    tag     => "backuppc_hosts_${backuppc_hostname}",
+    ensure => $ensure,
+    path   => $backuppc::params::hosts,
+    match  => "^${::fqdn}.*$",
+    line   => "${::fqdn} ${hosts_file_dhcp} backuppc ${hosts_file_more_users}\n",
+    tag    => "backuppc_hosts_${backuppc_hostname}",
   }
 
   @@file { "${backuppc::params::config_directory}/pc/${::fqdn}.pl":
