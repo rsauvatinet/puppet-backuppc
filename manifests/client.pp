@@ -216,7 +216,7 @@ class backuppc::client (
   $blackout_good_cnt     = false,
   $backups_disable       = false,
   $xfer_method           = 'rsync',
-  $xfer_loglevel         = 1,
+  $xfer_loglevel         = '1',
   $smb_share_name        = false,
   $smb_share_username    = false,
   $smb_share_passwd      = false,
