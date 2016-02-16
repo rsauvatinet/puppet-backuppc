@@ -427,8 +427,9 @@ class backuppc::server (
 
   # Ensure readable file permissions on
   # the known hosts file.
-  file { '/etc/ssh/ssh_known_hosts':
+  file { 'backuppc_ssh_known_hosts':
     ensure => file,
+    path   => '/etc/ssh/ssh_known_hosts',
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
