@@ -1,14 +1,25 @@
 # BackupPC Module
 
+####Table of Contents
+
+1. [Overview](#overview)
+2. [Module Description - What the module does and why it is useful](#module-description)
+3. [Usage - Configuration options and additional functionality](#usage)
+4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+5. [Limitations - OS compatibility, etc.](#limitations)
+6. [Development - Guide for contributing to the module](#development)
+
+##Overview
+
 This module will install and configure a BackupPC server and allow you to add other puppet managed nodes as clients/hosts. It
 uses exported resources to create the client's configuration file, add it to the hosts file and setup ssh access if needed.
 
 This module started as a fork of https://github.com/codec/puppet-backuppc.
 
-## Description
+##Module Description
 
 BackupPC has many configuration options and this module should provide you access to most of them. BackupPC's global configuration
-file is managed by backuppc::server and is intended to setup useful defaults that can be overridden by the client if needed. 
+file is managed by backuppc::server and is intended to setup useful defaults that can be overridden by the client if needed.
 
 Where BackupPC's configuration file uses camel case for the config variables the module's class parameters would use the same names but
 replacing the uppercase characters with lowercase and an underscore prefix.
@@ -91,6 +102,18 @@ class { 'backuppc::client':
 Debian by default installs a 'localhost' host, but if you want to managed it with puppet or if you're on Centos/RHEL this example will use the tar method to backup
 the paths you sepcify. The example uses sudo which is not configured in the module itself.
 
+##Reference
+
+###Classes
+
+####Public Classes
+
+* backuppc:server: Class used to install backuppc.
+* backuppc::client: Configures host for backup through backuppc.
+
+####Private Classes
+
+* backuppc::params: Default values.
 
 ## Limitations
 
