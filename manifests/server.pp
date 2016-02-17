@@ -211,7 +211,7 @@ class backuppc::server (
   $apache_allow_from          = 'all',
   $apache_require_ssl         = false,
   $backuppc_password          = '',
-  $topdir                     = $backuppc::params::topdir
+  $topdir                     = '',
 ) {
   include backuppc::params
 
@@ -296,6 +296,11 @@ class backuppc::server (
   $real_incr_fill = bool2num($incr_fill)
   $real_bzfif     = bool2num($blackout_zero_files_is_fatal)
 
+  $real_topdir = $topdir ? {
+    ''      => $backuppc::params::topdir,
+    default => $topdir,
+  }
+
   # Set up dependencies
   Package[$backuppc::params::package] -> File[$backuppc::params::config] -> Service[$backuppc::params::service]
 
@@ -340,7 +345,7 @@ class backuppc::server (
     require => Package[$backuppc::params::package],
   }
 
-  file { [$topdir, "${topdir}/.ssh"]:
+  file { [$real_topdir, "${real_topdir}/.ssh"]:
     ensure  => 'directory',
     recurse => true,
     owner   => 'backuppc',
@@ -371,13 +376,13 @@ class backuppc::server (
   }
 
   exec { 'backuppc-ssh-keygen':
-    command => "ssh-keygen -f ${topdir}/.ssh/id_rsa -C 'BackupPC on ${::fqdn}' -N ''",
+    command => "ssh-keygen -f ${real_topdir}/.ssh/id_rsa -C 'BackupPC on ${::fqdn}' -N ''",
     user    => 'backuppc',
-    unless  => "test -f ${topdir}/.ssh/id_rsa",
+    unless  => "test -f ${real_topdir}/.ssh/id_rsa",
     path    => ['/usr/bin','/bin'],
     require => [
         Package[$backuppc::params::package],
-        File["${topdir}/.ssh"],
+        File["${real_topdir}/.ssh"],
     ],
   }
 
