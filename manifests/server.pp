@@ -430,15 +430,5 @@ class backuppc::server (
     require => Package[$backuppc::params::package],
   }
 
-  # Ensure readable file permissions on
-  # the known hosts file.
-  file { 'backuppc_ssh_known_hosts':
-    ensure => file,
-    path   => '/etc/ssh/ssh_known_hosts',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-  }
-
   Sshkey <<| tag == "backuppc_sshkeys_${::fqdn}" |>>
 }
