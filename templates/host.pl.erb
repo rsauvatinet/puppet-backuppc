@@ -36,7 +36,7 @@ $Conf{BlackoutBadPingLimit} = <%= @blackout_bad_ping_limit %>;
 <% if @ping_max_msec -%>
 $Conf{PingMaxMsec} = <%= @ping_max_msec %>;
 <% end -%>
-<% if !@blackout_good_cnt.empty? -%>
+<% if @blackout_good_cnt.empty -%>
 $Conf{BlackoutGoodCnt}      = <%= @blackout_good_cnt %>;
 <% end -%>
 <% if !@backup_files_only.empty? -%>
