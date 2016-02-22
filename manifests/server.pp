@@ -22,6 +22,32 @@
 # there are no user backup requests then this is the
 # maximum number of simultaneous backups.
 #
+#[*cgi_admin_user_group*]
+#[*cgi_admin_users*]
+#The administrative users are the union of the unix/linux
+#group $Conf{CgiAdminUserGroup} and the manual list of users,
+#separated by spaces, in $Conf{CgiAdminUsers}.
+#If you don't want a group or manual list of users set the
+#corresponding configuration setting to undef or an empty string.
+#
+#[*language*]
+#
+#Language to use. See lib/BackupPC/Lang for the list of
+#supported languages, which include English (en), French (fr),
+#Spanish (es), German (de), Italian (it), Dutch (nl), Polish (pl),
+#Portuguese Brazillian (pt_br) and Chinese (zh_CH).
+# cz, de, en, es, fr, it, nl, pl, pt_br, zh_CN
+#
+#Currently the Language setting applies to the CGI interface and email
+#messages sent to users. Log files and other text are still in English.
+# [*cgi_url*]
+#    URL of the BackupPC_Admin CGI script. Used for email messages.
+#
+# [*cgi_image_dir_url*]
+#   URL (without the leading http://host) for BackupPC's image directory. The CGI script uses this value to serve up image files.
+#   Example:
+#       $Conf{CgiImageDirURL} = '/BackupPC';
+#
 # [*max_user_backups*]
 # Additional number of simultaneous backups that users
 # can run. As many as $Conf{MaxBackups} + $Conf{MaxUserBackups}
@@ -160,6 +186,12 @@
 # [*backuppc_password*]
 # Password for the backuppc user used to access the web interface.
 #
+# [*user_cmd_check_status*]
+#    boolean
+#    Whether the exit status of each PreUserCmd and PostUserCmd is checked.
+#    If set and the Dump/Restore/Archive Pre/Post UserCmd returns a non-zero exit status then the dump/restore/archive is aborted. To maintain backward compatibility (where the exit status in early versions was always ignored), this flag defaults to 0.
+#    If this flag is set and the Dump/Restore/Archive PreUserCmd fails then the matching Dump/Restore/Archive PostUserCmd is not executed. If DumpPreShareCmd returns a non-exit status, then DumpPostShareCmd is not executed, but the DumpPostUserCmd is still run (since DumpPreUserCmd must have previously succeeded).
+#    An example of a DumpPreUserCmd that might fail is a script that snapshots or dumps a database which fails because of some database error.
 # [*topdir*]
 # Overwrite package default location for backuppc.
 #
@@ -177,6 +209,7 @@ class backuppc::server (
   $wakeup_schedule            = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
   $max_backups                = 4,
   $max_user_backups           = 4,
+  $language                   = 'en',
   $max_pending_cmds           = 15,
   $max_backup_pc_nightly_jobs = 2,
   $backup_pc_nightly_period   = 1,
@@ -185,7 +218,7 @@ class backuppc::server (
   $trash_clean_sleep_sec      = 300,
   $dhcp_address_ranges        = [],
   $full_period                = '6.97',
-  $full_keep_cnt              = 1,
+  $full_keep_cnt              = [1],
   $full_age_max               = 90,
   $incr_period                = '0.97',
   $incr_keep_cnt              = 6,
@@ -196,6 +229,7 @@ class backuppc::server (
   $restore_info_keep_cnt      = 10,
   $archive_info_keep_cnt      = 10,
   $blackout_good_cnt          = 7,
+  $cgi_url                    = '"http://".$Conf{ServerHost}."/backuppc/index.cgi"',
   $blackout_periods           = [ { hourBegin =>  7.0,
                                     hourEnd   => 19.5,
                                     weekDays  => [1, 2, 3, 4, 5],
@@ -211,9 +245,12 @@ class backuppc::server (
   $apache_allow_from          = 'all',
   $apache_require_ssl         = false,
   $backuppc_password          = '',
-  $topdir                     = '',
-) {
-  include backuppc::params
+  $topdir                     = $backuppc::params::topdir,
+  $cgi_image_dir_url          = $backuppc::params::cgi_image_dir_url,
+  $cgi_admin_users            = 'backuppc',
+  $cgi_admin_user_group       = 'backuppc',
+  $user_cmd_check_status      =  true,
+) inherits backuppc::params  {
 
   if empty($backuppc_password) {
     fail('Please provide a password for the backuppc user. This is used to login to the web based administration site.')
@@ -254,9 +291,6 @@ class backuppc::server (
   validate_re("${incr_period}", '^[0-9]([0-9]*)?(\.[0-9]{1,2})?$',
   'Incr_period parameter should be a number')
 
-  validate_re("${full_keep_cnt}", '^[1-9]([0-9]*)?$',
-  'Full_keep_cnt parameter should be a number')
-
   validate_re("${full_age_max}", '^[1-9]([0-9]*)?$',
   'Full_age_max parameter should be a number')
 
@@ -288,13 +322,20 @@ class backuppc::server (
   validate_array($dhcp_address_ranges)
   validate_array($incr_levels)
   validate_array($blackout_periods)
+  validate_array($full_keep_cnt)
 
   validate_hash($email_headers)
 
   validate_string($apache_allow_from)
+  validate_string($cgi_url)
+  validate_string($cgi_image_dir_url)
+  validate_string($language)
+  validate_string($cgi_admin_user_group)
+  validate_string($cgi_admin_users)
 
   $real_incr_fill = bool2num($incr_fill)
   $real_bzfif     = bool2num($blackout_zero_files_is_fatal)
+  $real_uccs      = bool2num($user_cmd_check_status)
 
   $real_topdir = $topdir ? {
     ''      => $backuppc::params::topdir,
@@ -320,7 +361,7 @@ class backuppc::server (
   service { $backuppc::params::service:
     ensure    => $service_enable,
     enable    => $service_enable,
-    hasstatus => false,
+    hasstatus => true,
     pattern   => 'BackupPC'
   }
 
@@ -328,8 +369,9 @@ class backuppc::server (
     ensure  => $ensure,
     owner   => 'backuppc',
     group   => $backuppc::params::group_apache,
-    mode    => '0644',
+    mode    => '0640',
     content => template('backuppc/config.pl.erb'),
+    notify  => Service[$backuppc::params::service]
   }
 
   file { $backuppc::params::config_directory:
@@ -347,10 +389,11 @@ class backuppc::server (
 
   file { [$real_topdir, "${real_topdir}/.ssh"]:
     ensure  => 'directory',
-    recurse => true,
     owner   => 'backuppc',
     group   => $backuppc::params::group_apache,
-    mode    => '0644',
+    mode    => '0640',
+    require => Package[$backuppc::params::package],
+    ignore  => 'BackupPC.sock',
   }
 
   # Workaround for client exported resources that are
