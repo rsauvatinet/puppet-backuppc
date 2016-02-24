@@ -1,0 +1,30 @@
+{
+  "name": "wyrie-backuppc",
+  "version": "0.1.4",
+  "author": "Scott Barr",
+  "summary": "BackupPC module",
+  "license": "Apache-2.0",
+  "source": "https://github.com/wyrie/puppet-backuppc",
+  "project_page": "https://github.com/wyrie/puppet-backuppc",
+  "issues_url": null,
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.0.2"}
+  ],
+  "operatingsystem_support": [
+      {
+        "operatingsystem": "CentOS",
+        "operatingsystemrelease": [
+          "6"
+        ]
+      },
+      {
+        "operatingsystem": "Debian",
+        "operatingsystemrelease": [
+          "6",
+          "7"
+        ]
+      }
+  ]
+}
+
+
