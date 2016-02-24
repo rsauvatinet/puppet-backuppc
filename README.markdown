@@ -1,13 +1,15 @@
 # BackupPC Module
 
+[![Build Status](https://secure.travis-ci.org/wyrie/puppet-backuppc.png?branch=master)](http://travis-ci.org/wyrie/puppet-backuppc)
+
 ####Table of Contents
 
 1. [Overview](#overview)
-2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Usage - Configuration options and additional functionality](#usage)
-4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+2. [Module Description](#module-description)
+3. [Usage](#usage)
+4. [Reference](#reference)
+5. [Limitations](#limitations)
+6. [Development](#development)
 
 ##Overview
 
