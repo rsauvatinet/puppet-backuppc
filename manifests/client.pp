@@ -288,6 +288,11 @@ class backuppc::client (
   validate_re($ensure, '^(present|absent)$',
   'ensure parameter must have a value of: present or absent')
 
+  $directory_ensure = $ensure ? {
+    'present' => 'directory',
+    default   => absent,
+  }
+
   if empty($backuppc_hostname) {
     fail('Please provide the hostname of the node that hosts backuppc.')
   }
@@ -387,15 +392,8 @@ class backuppc::client (
       password   => sha1("tyF761_${::fqdn}${::uniqueid}"),
     }
 
-    file { $system_home_directory:
-      ensure  => directory,
-      owner   => $system_account,
-      group   => $system_account,
-      require => User[$system_account],
-    }
-
     file { "${system_home_directory}/.ssh":
-      ensure => directory,
+      ensure => $directory_ensure,
       mode   => '0700',
       owner  => $system_account,
       group  => $system_account,
