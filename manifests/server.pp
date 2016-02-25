@@ -467,7 +467,7 @@ class backuppc::server (
   # puppet, check the current hosts file and compare
   # it with what is in puppetdb.
   $dbhosts = query_nodes("Class[backuppc::client]{backuppc_hostname=\"${::fqdn}\"}")
-  $hostsstr = join(sort($dbhosts), ',')
+  $hostsstr = join(sort($dbhosts), '')
 
   exec { 'tidy_hosts_file':
     command => "sed -i '/#puppetmanaged$/d' ${backuppc::params::hosts}",
