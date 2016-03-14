@@ -470,9 +470,10 @@ class backuppc::server (
   $hostsstr = join(sort($dbhosts), '')
 
   exec { 'tidy_hosts_file':
-    command => "sed -i '/#puppetmanaged$/d' ${backuppc::params::hosts}",
-    path    => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
-    unless  => "test \"$(grep '#puppetmanaged' ${backuppc::params::hosts} | awk '{print \$1}' | sort | perl -pe 'chomp')\" = \"${hostsstr}\"",
+    command     => "sed -i '/#puppetmanaged$/d' ${backuppc::params::hosts}",
+    environment => ['LC_ALL=C'],
+    path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
+    unless      => "test \"$(grep '#puppetmanaged' ${backuppc::params::hosts} | awk '{print \$1}' | sort | perl -pe 'chomp')\" = \"${hostsstr}\"",
   }
 
   # Hosts
