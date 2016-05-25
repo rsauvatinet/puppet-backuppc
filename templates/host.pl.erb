@@ -13,7 +13,7 @@ $Conf{FullPeriod} = <%= @full_period %>;
 $Conf{IncrPeriod} = <%= @incr_period %>;
 <% end -%>
 <% if @full_keep_cnt -%>
-$Conf{FullKeepCnt} = <%= @full_keep_cnt %>;
+$Conf{FullKeepCnt} = <% if @full_keep_cnt.is_a?(Array) %>[<%= @full_keep_cnt.join(', ') %>]<% else %><%= @full_keep_cnt %><% end %>;
 <% end -%>
 <% if @full_age_max -%>
 $Conf{FullAgeMax}     = <%= @full_age_max %>;
