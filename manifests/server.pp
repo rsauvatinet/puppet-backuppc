@@ -321,6 +321,9 @@ class backuppc::server (
 
   validate_re("${email_notify_old_backup_days}", '^[1-9]([0-9]*)?$',
   'Blackout_good_cnt parameter should be a number')
+  
+  validate_re("${cgi_date_format_mmdd}", '^[012]$',
+  'Cgi_date_format_mmdd parameter should be 0-2')
 
   validate_array($wakeup_schedule)
   validate_array($dhcp_address_ranges)
@@ -336,9 +339,6 @@ class backuppc::server (
   validate_string($language)
   validate_string($cgi_admin_user_group)
   validate_string($cgi_admin_users)
-
-  validate_re("${cgi_date_format_mmdd}", '^[012]$',
-  'Cgi_date_format_mmdd paramter should be 0-2')
 
   $real_incr_fill = bool2num($incr_fill)
   $real_bzfif     = bool2num($blackout_zero_files_is_fatal)
