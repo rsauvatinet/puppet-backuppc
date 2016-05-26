@@ -49,7 +49,7 @@ $Conf{ServerInitdPath} = '';
 $Conf{ServerInitdStartCmd} = '';
 $Conf{FullPeriod} = <%= @full_period %>;
 $Conf{IncrPeriod} = <%= @incr_period %>;
-$Conf{FullKeepCnt} = <%= @full_keep_cnt %>;
+$Conf{FullKeepCnt} = <% if @full_keep_cnt.is_a?(Array) %>[<%= @full_keep_cnt.join(', ') %>]<% else %><%= @full_keep_cnt %><% end %>;
 $Conf{FullKeepCntMin} = 1;
 $Conf{FullAgeMax}     = <%= @full_age_max %>;
 $Conf{IncrKeepCnt} = <%= @incr_keep_cnt %>;
