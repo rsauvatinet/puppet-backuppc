@@ -184,6 +184,9 @@ $Conf{EMailFromUserName} = '<%= @email_from_user_name %>';
 <% if !@email_admin_user_name.empty? -%>
 $Conf{EMailAdminUserName} = '<%= @email_admin_user_name %>';
 <% end -%>
+<% if !@email_destination_domain.empty? -%>
+$Conf{EMailUserDestDomain} = '<%= @email_destination_domain %>';
+<% end -%>
 <% if @email_notify_old_backup_days -%>
 $Conf{EMailNotifyOldBackupDays} = <%= @email_notify_old_backup_days %>;
 <% end -%>

@@ -279,6 +279,7 @@ class backuppc::client (
   $email_notify_min_days = false,
   $email_from_user_name  = '',
   $email_admin_user_name = '',
+  $mail_destination_domain = '',
   $email_notify_old_backup_days = false,
   $hosts_file_dhcp       = 0,
   $hosts_file_more_users = '',

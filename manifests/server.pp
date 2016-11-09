@@ -168,6 +168,9 @@
 # [*email_admin_user_name*]
 # Destination address to an administrative user who will receive a nightly email with warnings and errors.
 #
+# [*email_destination_domain*]
+# Destination domain name for email sent to users.
+#
 # [*email_notify_old_backup_days*]
 # How old the most recent backup has to be before notifying user. When there have been no backups in this
 # number of days the user is sent an email.
@@ -241,6 +244,7 @@ class backuppc::server (
   $email_notify_min_days      = 2.5,
   $email_from_user_name       = 'backuppc',
   $email_admin_user_name      = 'backuppc',
+  $email_destination_domain   = '',
   $email_notify_old_backup_days = 7,
   $email_headers              = { 'MIME-Version' => 1.0,
                                   'Content-Type' => 'text/plain; charset="iso-8859-1"', },
@@ -321,7 +325,7 @@ class backuppc::server (
 
   validate_re("${email_notify_old_backup_days}", '^[1-9]([0-9]*)?$',
   'Blackout_good_cnt parameter should be a number')
-  
+
   validate_re("${cgi_date_format_mmdd}", '^[012]$',
   'Cgi_date_format_mmdd parameter should be 0-2')
 
