@@ -39,7 +39,7 @@ $Conf{DHCPAddressRanges} = [
 $Conf{BackupPCUser} = 'backuppc';
 $Conf{TopDir}      = '<%= scope.lookupvar('backuppc::server::real_topdir') %>';
 $Conf{ConfDir}     = '<%= scope.lookupvar('backuppc::params::config_directory') %>';
-$Conf{LogDir}      = '<%= scope.lookupvar('backuppc::params::log_directory') %>';
+$Conf{LogDir}      = '<%= scope.lookupvar('backuppc::server::real_log_directory') %>';
 $Conf{InstallDir}  = '<%= scope.lookupvar('backuppc::params::install_directory') %>';
 $Conf{CgiDir}      = '<%= scope.lookupvar('backuppc::params::cgi_directory') %>';
 $Conf{BackupPCUserVerify} = 1;

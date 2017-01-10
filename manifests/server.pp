@@ -353,6 +353,21 @@ class backuppc::server (
     default => $topdir,
   }
 
+  # On Debian, adapt log_directory to $topdir value
+  $real_log_directory = $::osfamily ? {
+    'Debian' => "${topdir}/log",
+    default  => $backuppc::params::log_directory,
+  }
+
+  # If topdir is changed, create a symlink between "default" topdir and the custom
+  # This permit "facter/backuppc_pubkey_rsa" to work properly.
+  if ($real_topdir !~ $backuppc::params::topdir) {
+    file { $backuppc::params::topdir:
+      ensure => link,
+      target => $real_topdir,
+    }
+  }
+
   # Set up dependencies
   Package[$backuppc::params::package] -> File[$backuppc::params::config] -> Service[$backuppc::params::service]
 
