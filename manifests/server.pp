@@ -369,7 +369,7 @@ class backuppc::server (
 
   # If topdir is changed, create a symlink between "default" topdir and the custom
   # This permit "facter/backuppc_pubkey_rsa" to work properly.
-  if ($real_topdir !~ $backuppc::params::topdir) {
+  if $real_topdir != $backuppc::params::topdir {
     file { $backuppc::params::topdir:
       ensure => link,
       target => $real_topdir,
