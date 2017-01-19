@@ -211,6 +211,11 @@
 # to stop/start/browse/restore backups for this host. These users will not be
 # sent email about this host.
 #
+# [*sudo_prepend*]
+# Prepend a command to the sudo command, as run in backuppc.sh. This is mostly
+# useful for running the backup via nice or ionice, in order to reduce the 
+# impact of large backups on the client.
+#
 # === Examples
 #
 #  See tests folder.
@@ -283,6 +288,7 @@ class backuppc::client (
   $email_notify_old_backup_days = false,
   $hosts_file_dhcp       = 0,
   $hosts_file_more_users = '',
+  $sudo_prepend = '',
     ) {
   include backuppc::params
 
