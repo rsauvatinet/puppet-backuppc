@@ -479,7 +479,7 @@ class backuppc::server (
 
   # Export backuppc's authorized key to all clients
   # TODO don't rely on facter to obtain the ssh key.
-  if $facts['backupps_pubkey_rsa'] != undef {
+  if $facts['backuppc_pubkey_rsa'] != undef {
     @@ssh_authorized_key { "backuppc_${::fqdn}":
       ensure  => present,
       key     => $::backuppc_pubkey_rsa,
