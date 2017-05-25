@@ -361,7 +361,7 @@ class backuppc::client (
       $sudo_commands_noexec = $sudo_command_noexec
     }
 
-    if ! empty($sudo_commands) {
+    if $facts['sudo_commands'] != undef {
       file { '/etc/sudoers.d/backuppc':
         ensure  => $ensure,
         owner   => 'root',
