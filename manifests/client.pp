@@ -367,7 +367,7 @@ class backuppc::client (
       $sudo_commands_noexec = $sudo_command_noexec
     }
 
-    if ! empty($sudo_commands) {
+    if $facts['sudo_commands'] != undef {
       file { '/etc/sudoers.d/backuppc':
         ensure  => $ensure,
         owner   => 'root',
@@ -396,7 +396,7 @@ class backuppc::client (
       shell      => '/bin/bash',
       comment    => 'BackupPC',
       system     => true,
-      password   => sha1("tyF761_${::fqdn}${::uniqueid}"),
+      password   => '*',
     }
 
     file { "${system_home_directory}/.ssh":
