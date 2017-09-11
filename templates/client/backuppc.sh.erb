@@ -10,7 +10,7 @@ case "${SSH_ORIGINAL_COMMAND}" in
   <%= @sudo_prepend -%> sudo ${SSH_ORIGINAL_COMMAND}
   <%- else -%>
   sudo ${SSH_ORIGINAL_COMMAND}
-  <%- end - %>
+  <%- end -%>
   ;;
 *)
   echo "REJECTED: ${SSH_ORIGINAL_COMMAND}"
