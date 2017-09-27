@@ -507,7 +507,7 @@ class backuppc::server (
     command     => "sed -i '/#puppetmanaged$/d' ${backuppc::params::hosts}",
     environment => ['LC_ALL=C'],
     path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
-    unless      => "test \"$(grep '#puppetmanaged' ${backuppc::params::hosts} | awk '{print \$1}' | sort | perl -pe 'chomp')\" = \"${hostsstr}\"",
+    unless      => "test \"$(sed -rn '/#puppetmanaged/ s/^([^ ]+).*/\\1/p' ${backuppc::params::hosts} | sort | tr -d '\\n')\" = \"${hostsstr}\"",
   }
 
   # Hosts
@@ -518,6 +518,7 @@ class backuppc::server (
   }
   File_line <<| tag == "backuppc_hosts_${::fqdn}" |>> {
     require => [Package[$backuppc::params::package],Exec['tidy_hosts_file']],
+    notify  => Service[$backuppc::params::service],
   }
 
   Sshkey <<| tag == "backuppc_sshkeys_${::fqdn}" |>>
