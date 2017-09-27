@@ -518,6 +518,7 @@ class backuppc::server (
   }
   File_line <<| tag == "backuppc_hosts_${::fqdn}" |>> {
     require => [Package[$backuppc::params::package],Exec['tidy_hosts_file']],
+    notify  => Service[$backuppc::params::service],
   }
 
   Sshkey <<| tag == "backuppc_sshkeys_${::fqdn}" |>>
