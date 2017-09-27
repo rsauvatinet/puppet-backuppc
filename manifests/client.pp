@@ -434,7 +434,7 @@ class backuppc::client (
     ensure => $ensure,
     path   => $backuppc::params::hosts,
     match  => "^${::fqdn}.*$",
-    line   => "${::fqdn} ${hosts_file_dhcp} backuppc ${hosts_file_more_users}\t#puppetmanaged\n",
+    line   => "${::fqdn} ${hosts_file_dhcp} backuppc ${hosts_file_more_users}\t#puppetmanaged",
     tag    => "backuppc_hosts_${backuppc_hostname}",
   }
 
